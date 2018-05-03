@@ -2,63 +2,35 @@ package com.main;
 
 
 
-import com.newTools.*;
 import com.poSTagger.PoSTagger;
-import com.poSTagger.Viterbi;
-import com.poSTaggerNew.PoSTaggerNew;
-import com.taggingTool.BiGram;
-import com.taggingTool.PoSTag;
-import com.taggingTool.Sentence;
 import com.taggingTool.Tag;
-import com.treeBankReader.FileReaderPoSTagging;
+import com.tester.*;
+import com.poSTagger.Viterbi;
 import com.treeBankReader.TreeBankReader;
 import com.utilities.Log;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.time.StopWatch;
 
 
 public class Main {
 
-    private static final String DICT_ITA_ENG = "dict_ita_eng.txt";
-
-    private static final String TREE_BANK_TEST_DEV = "test_dev.txt";
-    private static final String TREE_BANK_DEV = "dev.txt";
     private static final String TREE_BANK_TRAINING = "training.txt"; //Per esempio , queste persone sono gli stranieri immigrati in Italia da poco tempo , che conoscono poco la lingua italiana .
     private static final String TREE_BANK_TESTING = "testing.txt";
 
-    private static final String POS_TAGGER_TRAINING = "pos_tagger_training.ser";
-    private static final String POS_TAGGER_TESTING = "pos_tagger_testing.ser";
-    private static final String POS_TAGGER_DEV = "pos_tagger_dev.ser";
-    private static final String POS_TAGGER_TEST_DEV = "pos_tagger_test_dev.ser";
 
     public static void main(String[] args) {
-
-
-        TreeBankReader t = new TreeBankReader();
-        t.fileToPoSTags(TREE_BANK_DEV, 2);
-
-
-        ViterbiNew viterbiNew = new ViterbiNew(t);
-
-        for(PoSTagNew poSTagNew : viterbiNew.poSTagging("Mariuzzo ha fatto".split(" "))) {
-            Log.log(poSTagNew.getWord() + " " + poSTagNew.getTag());
-        }
-/**/
-
-
-
-
+        accuracyTesting();
     }
 
-    private static FileReaderPoSTagging readingFileIfNeeded(String treeBankFile, String objectFile){
-        FileReaderPoSTagging taggerTraining = FileReaderPoSTagging.setSavedPoSTagger(treeBankFile,objectFile);
-        if(taggerTraining == null){
-            taggerTraining = new FileReaderPoSTagging();
-            taggerTraining.updatePoSTagger(treeBankFile,objectFile);
-        }
-        return taggerTraining;
+    private static void accuracyTesting(){
+
+        TreeBankReader treeBankReader = new TreeBankReader(TREE_BANK_TRAINING);
+        Tag nounAdjVerbPropn [] = {Tag.NOUN, Tag.ADJ, Tag.PROPN, Tag.VERB} ;
+
+        Viterbi viterbi = new Viterbi(treeBankReader,nounAdjVerbPropn);
+        PoSTagger poSTagger = new PoSTagger(treeBankReader);
+
+        Log.log("ACCURACY BASELINE "+ (float)PoSTaggerTester.testPoSTagger(poSTagger, TREE_BANK_TESTING)*100 + "%");
+        Log.log("ACCURACY VITERBI "+ (float)PoSTaggerTester.testPoSTagger(viterbi, TREE_BANK_TESTING)*100 + "%");
     }
 
 }
