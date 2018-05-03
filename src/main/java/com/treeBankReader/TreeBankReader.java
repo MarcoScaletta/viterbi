@@ -107,7 +107,7 @@ public class TreeBankReader {
         bigramNums.put(biGram, (num == null) ? (long)1 : num+1);
     }
 
-    private static Integer getIntegerString(String string) {
+    protected static Integer getIntegerString(String string) {
         Integer i;
         try {
             i = Integer.parseInt(string);
