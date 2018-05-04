@@ -13,7 +13,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 public class Main {
 
-    private static final String TREE_BANK_TRAINING = "training.txt"; //Per esempio , queste persone sono gli stranieri immigrati in Italia da poco tempo , che conoscono poco la lingua italiana .
+    private static final String TREE_BANK_TRAINING = "training.txt";
     private static final String TREE_BANK_TESTING = "testing.txt";
 
 
