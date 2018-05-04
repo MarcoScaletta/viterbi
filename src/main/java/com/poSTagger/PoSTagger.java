@@ -4,15 +4,16 @@ import com.taggingTool.PoSTag;
 import com.taggingTool.Sentence;
 import com.taggingTool.Tag;
 import com.treeBankReader.TreeBankReader;
+import javafx.geometry.Pos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PoSTagger {
 
     private final HashMap<PoSTag, Double> poSTagGivenWordProbs = new HashMap<>();
-    protected final List<String> words= new ArrayList<>();
+    private final HashMap<String, HashSet<PoSTag>> poSTagForWord = new HashMap<>();
+    protected final HashSet<PoSTag> poSTags = new HashSet<>();
+    protected final HashSet<String> words= new HashSet<>();
 
     public PoSTagger(TreeBankReader treeBankReader) {
         words.addAll(treeBankReader.getPoSTagPerWordNums().keySet());
@@ -21,6 +22,7 @@ public class PoSTagger {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        init();
     }
 
     protected void initProbs(TreeBankReader treeBankReader) throws Exception {
@@ -33,35 +35,55 @@ public class PoSTagger {
         }
     }
 
+    private void init(){
+        for(String word : words)
+            poSTagForWord.put(word, new HashSet<>());
+
+        for(PoSTag poSTag : poSTagGivenWordProbs.keySet()){
+            poSTags.add(poSTag);
+            poSTagForWord.get(poSTag.getWord()).add(poSTag);
+        }
+    }
+
     public Sentence poSTagging(String [] wordsArray){
         Sentence sentence = new Sentence();
         double maxProb;
         double tempProb;
+        PoSTag [] poSTagsList = new PoSTag[wordsArray.length];
         PoSTag maxProbPT;
-        for(String s : wordsArray){
+
+        for (int i = 0; i < wordsArray.length; i++) {
             maxProbPT = null;
             maxProb = 0;
-            if(words.contains(s)){
-                for(PoSTag poSTag : poSTagGivenWordProbs.keySet()){
-                    if(s.equals(poSTag.getWord())){
+            if(words.contains(wordsArray[i])){
+                for(PoSTag poSTag : poSTagForWord.get(wordsArray[i])){
 
-                        tempProb = poSTagGivenWordProbs.get(poSTag);
-                        if(tempProb > maxProb){
-                            maxProbPT = poSTag;
-                            maxProb = tempProb;
-                        }
+                    tempProb = poSTagGivenWordProbs.get(poSTag);
+                    if(tempProb > maxProb){
+                        maxProbPT = poSTag;
+                        maxProb = tempProb;
                     }
-
                 }
-                sentence.getPoSTags().add(maxProbPT);
+
+                poSTagsList[i] = (maxProbPT);
             }else
-                sentence.getPoSTags().add(new PoSTag(s,Tag.PROPN));
+                poSTagsList[i] =(new PoSTag(wordsArray[i],Tag.PROPN));
         }
+        sentence.getPoSTags().addAll(Arrays.asList(poSTagsList));
+
         return sentence;
     }
 
     public HashMap<PoSTag, Double> getPoSTagGivenWordProbs() {
         return poSTagGivenWordProbs;
+    }
+
+    public HashSet<PoSTag> getPoSTags() {
+        return poSTags;
+    }
+
+    public HashSet<String> getWords() {
+        return words;
     }
 }
 
