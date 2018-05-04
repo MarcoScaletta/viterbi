@@ -5,8 +5,6 @@ import com.taggingTool.PoSTag;
 import com.taggingTool.Sentence;
 import com.taggingTool.Tag;
 import com.treeBankReader.TreeBankReader;
-import com.utilities.Log;
-import javafx.geometry.Pos;
 
 import java.util.*;
 
@@ -64,7 +62,6 @@ public class Viterbi extends PoSTagger {
 
     @Override
     public Sentence poSTagging(String[] sentenceString) {
-
         Sentence sentence = new Sentence();
         double viterbi[][] = new double[Tag.values().length][sentenceString.length+2];
         int backpointer[][] = new int[Tag.values().length][sentenceString.length+2];
@@ -81,13 +78,11 @@ public class Viterbi extends PoSTagger {
         }
         viterbi[0][0]=0;
 
-//for(BiGram biGram : fstTagBigrams.get(Tag.values()[s])){
 
         for (int t = 0; t < sentenceString.length; t++) {
             for (int s = 0; s < Tag.values().length; s++) {
 
                 for(BiGram biGram : fstTagBigrams.get(Tag.values()[s])){
-                    //if(biGram.getFstTag().equals(Tag.values()[s])){
                         Tag tag = biGram.getSndTag();
                         indexTag = Arrays.asList(Tag.values()).indexOf(tag);
                         if (!wordGivenPoSTagProbs.keySet().contains(new PoSTag(sentenceString[t], tag))) {
@@ -108,8 +103,6 @@ public class Viterbi extends PoSTagger {
                             viterbi[indexTag][t + 1] = newScore;
                             backpointer[indexTag][t + 1] = s;
                         }
-                    //}
-
                 }
             }
         }
