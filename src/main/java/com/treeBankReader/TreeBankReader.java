@@ -45,7 +45,7 @@ public class TreeBankReader {
             while((currentLine = br.readLine()) != null){
                 columns = currentLine.split("\t");
                 numRow = getIntegerString(columns[0]);
-                if(numRow != null && numRow >= 1){ // sto leggendo una riga con [NUM WORD WORD_ORIGIN TAG ...]
+                if(numRow != null && numRow >= 1){
                     if(numRow == 1) {
                         tag1 = Tag.valueOf("START");
                         saveTag(tag1);
@@ -84,7 +84,6 @@ public class TreeBankReader {
             }
         }
     }
-
 
     private void saveTag(Tag tag){
         Long num = tagNums.get(tag);
