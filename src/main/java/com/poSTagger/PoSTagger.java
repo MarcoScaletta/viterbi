@@ -4,7 +4,6 @@ import com.taggingTool.PoSTag;
 import com.taggingTool.Sentence;
 import com.taggingTool.Tag;
 import com.treeBankReader.TreeBankReader;
-import javafx.geometry.Pos;
 
 import java.util.*;
 
