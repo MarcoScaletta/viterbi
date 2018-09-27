@@ -2,6 +2,9 @@ package com.utilities;
 
 import java.time.LocalDateTime;
 
+/**
+ * Implements method to log information
+ */
 public class Log {
 
     public static void emptyLog(){

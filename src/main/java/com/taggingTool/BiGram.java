@@ -2,6 +2,9 @@ package com.taggingTool;
 
 import java.util.Objects;
 
+/**
+ * Represents the pair of consecutive tags
+ */
 public class BiGram {
 
     private final Tag fstTag;

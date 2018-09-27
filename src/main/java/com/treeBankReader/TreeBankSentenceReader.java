@@ -11,9 +11,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements a method to read a list of Sentence objects from a TreeBank
+ */
 public class TreeBankSentenceReader {
 
-
+    /**
+     * Reads and return a list of Sentence objects from a TreeBank
+     * @param filePath the TreeBank file
+     * @return the list of Sentence objects
+     */
     public static List<Sentence>  readSentence(String filePath){
         List<Sentence> poSTagList = new ArrayList<>();
         FileReader fr = null;

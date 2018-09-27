@@ -2,6 +2,7 @@
   <library name="Maven: org.apache.commons:commons-lang3:3.7">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/out/artifacts/viterbi_jar/viterbi.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7-javadoc.jar!/" />

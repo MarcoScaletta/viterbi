@@ -3,6 +3,9 @@ package com.taggingTool;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Represents the assignment of a tag to a word
+ */
 public class PoSTag implements Serializable {
     private String word;
     private Tag tag;

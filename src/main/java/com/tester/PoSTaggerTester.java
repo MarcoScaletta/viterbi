@@ -9,9 +9,17 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements a method to test the accuracy of a PoSTagger object
+ */
 public class PoSTaggerTester extends AccuracyTester{
 
-
+    /**
+     * Tests the accuracy of a PoSTagger object
+     * @param poSTagger PoSTagger object to be tested
+     * @param fileTestingPath file that contains the correct assignment
+     * @return the accuracy of PoSTagger for assignment in fileTestingPath
+     */
     public static double testPoSTagger(PoSTagger poSTagger, String fileTestingPath){
         long total;
         long partial = 0;

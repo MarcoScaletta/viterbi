@@ -5,28 +5,35 @@ import com.taggingTool.PoSTag;
 import com.taggingTool.Tag;
 import com.utilities.Log;
 import com.utilities.UtilitiesIO;
-import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Implements methods to read a TreeBank file and save
+ * the number of tags, PoSTags, PoSTags per word and BiGrams.
+ */
 public class TreeBankReader {
 
-    private final HashMap<Tag, Long> tagNums = new HashMap<>();
-    private final HashMap<String, Long> poSTagPerWordNums = new HashMap<>();
-    private final HashMap<PoSTag, Long> poSTagNums = new HashMap<>();
-    private final HashMap<BiGram, Long> bigramNums = new HashMap<>();
+    private final HashMap<Tag, Long> tagMap = new HashMap<>();
+    private final HashMap<String, Long> poSTagPerWordMap = new HashMap<>();
+    private final HashMap<PoSTag, Long> poSTagMap = new HashMap<>();
+    private final HashMap<BiGram, Long> biGramMap = new HashMap<>();
 
     public TreeBankReader(String filePath) {
         fileToPoSTags(filePath);
+        saveMissingTagAndBiGram();
     }
 
+    /**
+     * Reads from file the TreeBank and store information
+     * @param filePath TreeBank file
+     */
     private void fileToPoSTags(String filePath){
         Log.log("Reading TreeBank file <" + filePath +">");
 
-        StopWatch s = StopWatch.createStarted();
         FileReader fr = null;
         BufferedReader br = null;
 
@@ -64,7 +71,6 @@ public class TreeBankReader {
                 }
             }
 
-            saveMissingTagAndBigram();
         }catch (IOException e){
             e.printStackTrace();
         }finally {
@@ -72,40 +78,63 @@ public class TreeBankReader {
         }
     }
 
-    private void saveMissingTagAndBigram(){
+    /**
+     * Stores missing tags and bigrams
+     */
+    private void saveMissingTagAndBiGram(){
         BiGram newBiGram;
         for(Tag tag1 : Tag.values()){
-            if(!tagNums.containsKey(tag1))
-                tagNums.put(tag1, (long)1);
+            if(!tagMap.containsKey(tag1))
+                tagMap.put(tag1, (long)1);
             for (Tag tag2 :Tag.values()){
                 newBiGram = new BiGram(tag1, tag2);
-                if(!bigramNums.containsKey(newBiGram))
-                    bigramNums.put(newBiGram, (long)1);
+                if(!biGramMap.containsKey(newBiGram))
+                    biGramMap.put(newBiGram, (long)1);
             }
         }
     }
 
+    /**
+     * Stores the tag in tagMap that contains the count of occurrences
+     * of the tags
+     * @param tag Tag object to be saved
+     */
     private void saveTag(Tag tag){
-        Long num = tagNums.get(tag);
-        tagNums.put(tag, (num == null) ? (long)1 : num+1);
+        Long num = tagMap.get(tag);
+        tagMap.put(tag, (num == null) ? (long)1 : num+1);
     }
 
+    /**
+     * Stores the postag in poSTagPerWordMap that contains the count
+     * of occurrences of the postags
+     * @param poSTag PoSTag object to be saved
+     */
     private void savePoSTag(PoSTag poSTag){
         Long num;
-        num = poSTagPerWordNums.get(poSTag.getWord());
-        poSTagPerWordNums.put(poSTag.getWord(), (num == null) ? (long)1 : num+1);
+        num = poSTagPerWordMap.get(poSTag.getWord());
+        poSTagPerWordMap.put(poSTag.getWord(), (num == null) ? (long)1 : num+1);
 
-        num = poSTagNums.get(poSTag);
-        poSTagNums.put(poSTag, (num == null) ? (long)1 : num+1);
+        num = poSTagMap.get(poSTag);
+        poSTagMap.put(poSTag, (num == null) ? (long)1 : num+1);
 
 
     }
 
+    /**
+     * Stores the bigram in biGramMap that contains the count
+     * of occurrences of the bigrams
+     * @param biGram Bigram object to be saved
+     */
     private void saveBigram(BiGram biGram){
-        Long num = bigramNums.get(biGram);
-        bigramNums.put(biGram, (num == null) ? (long)1 : num+1);
+        Long num = biGramMap.get(biGram);
+        biGramMap.put(biGram, (num == null) ? (long)1 : num+1);
     }
 
+    /**
+     * Convert String object to Integer object
+     * @param string String object to be converted
+     * @return String object converted to Integer
+     */
     protected static Integer getIntegerString(String string) {
         Integer i;
         try {
@@ -117,20 +146,20 @@ public class TreeBankReader {
         return i;
     }
 
-    public HashMap<Tag, Long> getTagNums() {
-        return tagNums;
+    public HashMap<Tag, Long> getTagMap() {
+        return tagMap;
     }
 
-    public HashMap<String, Long> getPoSTagPerWordNums() {
-        return poSTagPerWordNums;
+    public HashMap<String, Long> getPoSTagPerWordMap() {
+        return poSTagPerWordMap;
     }
 
-    public HashMap<PoSTag, Long> getPoSTagNums() {
-        return poSTagNums;
+    public HashMap<PoSTag, Long> getPoSTagMap() {
+        return poSTagMap;
     }
 
-    public HashMap<BiGram, Long> getBigramNums() {
-        return bigramNums;
+    public HashMap<BiGram, Long> getBiGramMap() {
+        return biGramMap;
     }
 
 }

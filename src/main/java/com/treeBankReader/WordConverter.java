@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Convert word format in natural language to specific format of TreeBank
+ */
 public class WordConverter {
     private static HashMap<String,String []> detAdpMap = new HashMap<>();
     static {
@@ -50,6 +53,11 @@ public class WordConverter {
         detAdpMap.put("sulle", "su le".split(" "));
     }
 
+    /**
+     * Performs conversion on a sentence save as array of String objects
+     * @param sentenceString the sentence
+     * @return the sentence converted to the TreeBank format
+     */
     public static String[] formatStringSentence(String [] sentenceString){
         List<String> stringList = new ArrayList<>(Arrays.asList(sentenceString));
         String [] temp;
@@ -58,7 +66,6 @@ public class WordConverter {
             stringList.set(i,stringList.get(i).toLowerCase());
             temp = detAdpMap.get(stringList.get(i));
             if(temp != null){
-                Log.log("contiene "+stringList.get(i));
                 stringList.remove(i);
                 for (int j = 0; j < temp.length; j++) {
                     stringList.add(i+j, temp[j]);

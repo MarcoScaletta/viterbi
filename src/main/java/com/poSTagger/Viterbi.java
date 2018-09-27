@@ -1,5 +1,6 @@
 package com.poSTagger;
 
+import com.exceptions.BiGramException;
 import com.taggingTool.BiGram;
 import com.taggingTool.PoSTag;
 import com.taggingTool.Sentence;
@@ -29,18 +30,18 @@ public class Viterbi extends PoSTagger {
     }
 
     @Override
-    protected void initProbs(TreeBankReader treeBankReader) throws Exception {
+    protected void initProbs(TreeBankReader treeBankReader) throws BiGramException{
 
         wordGivenPoSTagProbs= new HashMap<>();
         biGramProbs = new HashMap<>();
         fstTagBigrams = new HashMap<>();
 
-        HashMap<Tag, Long>  tagNums = treeBankReader.getTagNums();
-        HashMap<PoSTag, Long>  poSTagsNums = treeBankReader.getPoSTagNums();
-        HashMap<BiGram, Long>  biGramSNums = treeBankReader.getBigramNums();
+        HashMap<Tag, Long>  tagNums = treeBankReader.getTagMap();
+        HashMap<PoSTag, Long>  poSTagsNums = treeBankReader.getPoSTagMap();
+        HashMap<BiGram, Long>  biGramSNums = treeBankReader.getBiGramMap();
 
-        if(treeBankReader.getBigramNums().isEmpty())
-            throw new Exception("BiGrams counters is empty");
+        if(treeBankReader.getBiGramMap().isEmpty())
+            throw new BiGramException("BiGrams counters is empty");
 
         for(BiGram biGram : biGramSNums.keySet())
             biGramProbs.put(biGram, (double) biGramSNums.get(biGram) / (double) tagNums.get(biGram.getSndTag()));
