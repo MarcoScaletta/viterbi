@@ -23,8 +23,8 @@ public class TreeBankReader {
     private final HashMap<BiGram, Long> biGramMap = new HashMap<>();
 
     public TreeBankReader(String filePath) {
-        fileToPoSTags(filePath);
         saveMissingTagAndBiGram();
+        fileToPoSTags(filePath);
     }
 
     /**
@@ -60,7 +60,9 @@ public class TreeBankReader {
                     try{
                         tag2 = Tag.valueOf(columns[3]);
                         saveTag(tag2);
-                        word = columns[1].toLowerCase();
+                        word = columns[1];
+                        if(!tag2.equals(Tag.PROPN))
+                            savePoSTag(new PoSTag(word.toLowerCase(),tag2));
                         savePoSTag(new PoSTag(word,tag2));
 
                         saveBigram(new BiGram(tag1,tag2));

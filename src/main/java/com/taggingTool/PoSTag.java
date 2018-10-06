@@ -40,9 +40,9 @@ public class PoSTag implements Serializable {
 
     @Override
     public String toString() {
-        return "PoSTag{" +
-                "word='" + word + '\'' +
-                ", tag=" + tag +
-                '}';
+        return "[" +
+                word +
+                "|" + tag +
+                ']';
     }
 }

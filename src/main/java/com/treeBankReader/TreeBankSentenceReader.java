@@ -40,7 +40,7 @@ public class TreeBankSentenceReader {
                 if (numRow != null && numRow >= 1) {
                     if (numRow == 1)
                         sentenceTemp = new Sentence();
-                    sentenceTemp.getPoSTags().add(new PoSTag(columns[1].toLowerCase(), Tag.valueOf(columns[3])));
+                    sentenceTemp.getPoSTags().add(new PoSTag(columns[1], Tag.valueOf(columns[3])));
                 }else if(columns[0].equals(""))
                     poSTagList.add(sentenceTemp);
             }

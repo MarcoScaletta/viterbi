@@ -84,26 +84,38 @@ public class Viterbi extends PoSTagger {
             for (int s = 0; s < Tag.values().length; s++) {
 
                 for(BiGram biGram : fstTagBigrams.get(Tag.values()[s])){
-                        Tag tag = biGram.getSndTag();
-                        indexTag = Arrays.asList(Tag.values()).indexOf(tag);
-                        if (!wordGivenPoSTagProbs.keySet().contains(new PoSTag(sentenceString[t], tag))) {
-                            if (!words.contains(sentenceString[t]) && tagForMissingWord.contains(tag)) {
+                    Tag tag = biGram.getSndTag();
+                    indexTag = Arrays.asList(Tag.values()).indexOf(tag);
+                    if (!wordGivenPoSTagProbs.keySet().contains(new PoSTag(sentenceString[t], tag))) {
+                        if(!words.contains(sentenceString[t])){
+                            if(t>0
+                                    && !sentenceString[t-1].equals(".")
+                                    && Character.getType(sentenceString[t].charAt(0)) == Character.UPPERCASE_LETTER
+                                    && tag.equals(Tag.PROPN)){
+                                newScore = viterbi[s][t]
+                                        + Math.log(biGramProbs.get(biGram))
+                                        + Math.log(1);
+
+                            }else if (tagForMissingWord.contains(tag)) {
+
                                 newScore = viterbi[s][t]
                                         + Math.log(biGramProbs.get(biGram))
                                         + Math.log((double) 1 / (double) tagForMissingWordSize);
                             } else
                                 newScore = Double.NEGATIVE_INFINITY;
-                        } else {
-                            poSTag = new PoSTag(sentenceString[t], tag);
+                        }else
+                            newScore = Double.NEGATIVE_INFINITY;
+                    } else {
+                        poSTag = new PoSTag(sentenceString[t], tag);
 
-                            newScore = viterbi[s][t]
-                                    + Math.log(biGramProbs.get(biGram))
-                                    + Math.log(wordGivenPoSTagProbs.get(poSTag));
-                        }
-                        if (viterbi[indexTag][t + 1] == Double.NEGATIVE_INFINITY || newScore > viterbi[indexTag][t + 1]) {
-                            viterbi[indexTag][t + 1] = newScore;
-                            backpointer[indexTag][t + 1] = s;
-                        }
+                        newScore = viterbi[s][t]
+                                + Math.log(biGramProbs.get(biGram))
+                                + Math.log(wordGivenPoSTagProbs.get(poSTag));
+                    }
+                    if (viterbi[indexTag][t + 1] == Double.NEGATIVE_INFINITY || newScore > viterbi[indexTag][t + 1]) {
+                        viterbi[indexTag][t + 1] = newScore;
+                        backpointer[indexTag][t + 1] = s;
+                    }
                 }
             }
         }

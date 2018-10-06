@@ -2,7 +2,9 @@ package com.tester;
 
 import com.taggingTool.PoSTag;
 import com.taggingTool.Sentence;
+import com.taggingTool.Tag;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -72,7 +74,7 @@ public class AccuracyTester {
             correctPT = correctList.get(i);
             toTestPT = toTestList.get(i);
             if(!correctPT.getWord().equals(toTestPT.getWord()))
-                return 0;
+                throw new Exception("list have to contain same words");
             if(correctPT.getTag().equals(toTestPT.getTag()))
                 correct++;
         }
