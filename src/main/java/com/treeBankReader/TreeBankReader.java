@@ -24,14 +24,19 @@ public class TreeBankReader {
 
     public TreeBankReader(String filePath) {
         saveMissingTagAndBiGram();
-        fileToPoSTags(filePath);
+        fileToPoSTags(filePath, 1);
+    }
+
+    public TreeBankReader(String filePath, int version) {
+        saveMissingTagAndBiGram();
+        fileToPoSTags(filePath, version);
     }
 
     /**
      * Reads from file the TreeBank and store information
      * @param filePath TreeBank file
      */
-    private void fileToPoSTags(String filePath){
+    private void fileToPoSTags(String filePath,int version){
         Log.log("Reading TreeBank file <" + filePath +">");
 
         FileReader fr = null;
@@ -61,10 +66,48 @@ public class TreeBankReader {
                         tag2 = Tag.valueOf(columns[3]);
                         saveTag(tag2);
                         word = columns[1];
-                        if(!tag2.equals(Tag.PROPN))
-                            savePoSTag(new PoSTag(word.toLowerCase(),tag2));
-                        savePoSTag(new PoSTag(word,tag2));
+                        switch (version){
+                            case 1:
+                                savePoSTag(new PoSTag(word.toLowerCase(),tag2));
+                                break;
+                            case 2:
+                                if(!tag2.equals(Tag.PROPN))
+                                    savePoSTag(new PoSTag(word.toLowerCase(),tag2));
+                                else if(Character.isUpperCase(word.charAt(0)))
+                                    savePoSTag(new PoSTag(word,tag2));
+                                break;
+                            case 3:
 
+                                if(tag2.equals(Tag.PROPN))
+                                    savePoSTag(new PoSTag(word,tag2));
+                                else{
+                                    if(Character.isUpperCase(word.charAt(0))){
+                                        savePoSTag(new PoSTag(word,tag2));
+                                        savePoSTag(new PoSTag(word.toLowerCase(),tag2));
+                                    }else{
+                                        savePoSTag(new PoSTag(word,tag2));
+                                        savePoSTag(new PoSTag(
+                                                word.substring(0,1).toUpperCase()
+                                                        +word.substring(1),tag2));
+                                    }
+
+                                }
+
+                                break;
+                            case 4:
+
+                                if(!tag2.equals(Tag.PROPN))
+                                    savePoSTag(new PoSTag(word,tag2));
+                                savePoSTag(new PoSTag(word,tag2));
+                                break;
+                            case 5:
+
+                                if(!tag2.equals(Tag.PROPN))
+                                    savePoSTag(new PoSTag(word.toLowerCase(),tag2));
+                                savePoSTag(new PoSTag(word,tag2));
+                                break;
+
+                        }
                         saveBigram(new BiGram(tag1,tag2));
                         tag1 = tag2;
                     }catch (IllegalArgumentException e){

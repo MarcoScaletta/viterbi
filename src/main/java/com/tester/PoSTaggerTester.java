@@ -20,7 +20,8 @@ public class PoSTaggerTester extends AccuracyTester{
      * @param fileTestingPath file that contains the correct assignment
      * @return the accuracy of PoSTagger for assignment in fileTestingPath
      */
-    public static double testPoSTagger(PoSTagger poSTagger, String fileTestingPath){
+    public static double testPoSTagger(PoSTagger poSTagger,
+                                       String fileTestingPath,boolean upperCase){
         long total;
         long partial = 0;
         float time;
@@ -28,7 +29,7 @@ public class PoSTaggerTester extends AccuracyTester{
 
         Log.log("TestPoSTagger ["+poSTagger.getClass()+ "] started");
         StopWatch stopWatch = StopWatch.createStarted();
-        List<Sentence> correctLists = TreeBankSentenceReader.readSentence(fileTestingPath);
+        List<Sentence> correctLists = TreeBankSentenceReader.readSentence(fileTestingPath,upperCase);
         List<Sentence> tpTestLists = new ArrayList<>();
         List<List <String>> stringSentences = Sentence.toWordsMoreSentences(correctLists);
 

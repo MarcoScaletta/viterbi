@@ -17,14 +17,21 @@ public class Viterbi extends PoSTagger {
     private HashMap<Tag, HashSet<BiGram>> fstTagBigrams;
     private final Tag tagForMissingWordArray [];
 
-    public Viterbi(TreeBankReader treeBankReader) {
-        super(treeBankReader);
+    public Viterbi(TreeBankReader treeBankReader,int version) {
+        super(treeBankReader,version);
         this.tagForMissingWordArray =  new Tag[1];
         tagForMissingWordArray[0] = Tag.NOUN;
 
     }
+
     public Viterbi(TreeBankReader treeBankReader, Tag[] tagsForMissingWord) {
         super(treeBankReader);
+        this.tagForMissingWordArray = tagsForMissingWord;
+        initFstTagBigrams();
+    }
+
+    public Viterbi(TreeBankReader treeBankReader, int version, Tag[] tagsForMissingWord) {
+        super(treeBankReader,version);
         this.tagForMissingWordArray = tagsForMissingWord;
         initFstTagBigrams();
     }
@@ -64,6 +71,26 @@ public class Viterbi extends PoSTagger {
     @Override
     public Sentence poSTagging(String[] sentenceString) {
         Sentence sentence = new Sentence();
+        switch (this.version) {
+            case 1: // all words are in lower case
+                for (int i = 0; i < sentenceString.length; i++) {
+                    sentenceString[i] = sentenceString[i].toLowerCase();
+                }
+                break;
+            case 2: // only string that are PROPN could have first character to upper case
+                for (int i = 0; i < sentenceString.length; i++) {
+                    if (Character.isUpperCase(sentenceString[i].charAt(0)) &&
+                            !wordGivenPoSTagProbs.containsKey(
+                                    new PoSTag(sentenceString[i], Tag.PROPN)))
+                        sentenceString[i] = sentenceString[i].toLowerCase();
+                    else
+                        sentenceString[i] = sentenceString[i].substring(0,1)+sentenceString[i].substring(1).toLowerCase();
+
+                }
+            case 3: // the sentence is not edited
+                //do nothing
+                break;
+        }
         double viterbi[][] = new double[Tag.values().length][sentenceString.length+2];
         int backpointer[][] = new int[Tag.values().length][sentenceString.length+2];
         double newScore;
@@ -95,7 +122,6 @@ public class Viterbi extends PoSTagger {
                                 newScore = viterbi[s][t]
                                         + Math.log(biGramProbs.get(biGram))
                                         + Math.log(1);
-
                             }else if (tagForMissingWord.contains(tag)) {
 
                                 newScore = viterbi[s][t]

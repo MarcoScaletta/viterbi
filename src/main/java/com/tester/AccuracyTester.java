@@ -67,13 +67,12 @@ public class AccuracyTester {
         int correct = 0;
         PoSTag correctPT;
         PoSTag toTestPT;
-
         if(correctList.size() != toTestList.size() || correctList.size() < 1)
             throw new Exception("lists have to have same size");
         for (int i = 0; i < correctList.size(); i++) {
             correctPT = correctList.get(i);
             toTestPT = toTestList.get(i);
-            if(!correctPT.getWord().equals(toTestPT.getWord()))
+            if(!correctPT.getWord().toLowerCase().equals(toTestPT.getWord().toLowerCase()))
                 throw new Exception("list have to contain same words");
             if(correctPT.getTag().equals(toTestPT.getTag()))
                 correct++;

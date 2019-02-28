@@ -22,9 +22,21 @@ public class PoSTagger {
     private final HashMap<String, HashSet<PoSTag>> poSTagForWord = new HashMap<>();
     protected final HashSet<PoSTag> poSTags = new HashSet<>();
     protected final HashSet<String> words= new HashSet<>();
+    protected final int version;
 
     public PoSTagger(TreeBankReader treeBankReader) {
         words.addAll(treeBankReader.getPoSTagPerWordMap().keySet());
+        this.version = 1;
+        try {
+            initProbs(treeBankReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        init();
+    }
+    public PoSTagger(TreeBankReader treeBankReader, int version) {
+        words.addAll(treeBankReader.getPoSTagPerWordMap().keySet());
+        this.version = version;
         try {
             initProbs(treeBankReader);
         } catch (Exception e) {
