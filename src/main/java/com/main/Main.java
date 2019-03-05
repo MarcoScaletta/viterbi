@@ -3,11 +3,14 @@ package com.main;
 
 
 import com.poSTagger.PoSTagger;
-import com.taggingTool.Tag;
-import com.tester.*;
 import com.poSTagger.Viterbi;
+import com.taggingTool.Tag;
+import com.tester.PoSTaggerTester;
 import com.treeBankReader.TreeBankReader;
 import com.utilities.Log;
+
+import java.io.*;
+import java.nio.file.Paths;
 
 @SuppressWarnings( value = "Duplicates")
 public class Main {
@@ -30,12 +33,60 @@ public class Main {
         accuracyTestingVersion5();
     }
 
-    private static void examplePoSTagVersion1(String [] sentence){
+    public static String examplePoSTagVersion1(String sentence){
+        String result;
 
-        TreeBankReader treeBankReader = new TreeBankReader(TREE_BANK_TRAINING);
+        TreeBankReader treeBankReader = loadTreeBankReader();
         Tag nounAdjVerbPropn [] = {Tag.NOUN, Tag.ADJ, Tag.PROPN, Tag.VERB} ;
         Viterbi viterbi = new Viterbi(treeBankReader,nounAdjVerbPropn);
-        Log.log(viterbi.poSTagging(sentence).getPoSTags().toString());
+        result =viterbi.poSTagging(sentence.split(" ")).getPoSTags().toString();
+        Log.log(result);
+        return result;
+    }
+
+    private static TreeBankReader loadTreeBankReader(){
+        try {
+            FileInputStream fi = new FileInputStream(new File("tree-bank-reader.txt"));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+
+            // Read objects
+            TreeBankReader treeBankReader = (TreeBankReader) oi.readObject();
+
+
+            oi.close();
+            fi.close();
+            return treeBankReader;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            System.out.println("I'm in " + Paths.get("").toAbsolutePath());
+        } catch (IOException e) {
+            System.out.println("Error initializing stream");
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static void saveTreeBankReader(){
+        TreeBankReader treeBankReader = new TreeBankReader(TREE_BANK_TRAINING);
+
+        try {
+            FileOutputStream f = new FileOutputStream(new File("tree-bank-reader.txt"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+
+            o.writeObject(treeBankReader);
+
+            o.close();
+            f.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("Error initializing stream");
+        }
+
+
 
     }
 

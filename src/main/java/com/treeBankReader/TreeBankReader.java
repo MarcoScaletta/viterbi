@@ -9,13 +9,14 @@ import com.utilities.UtilitiesIO;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Implements methods to read a TreeBank file and save
  * the number of tags, PoSTags, PoSTags per word and BiGrams.
  */
-public class TreeBankReader {
+public class TreeBankReader implements Serializable {
 
     private final HashMap<Tag, Long> tagMap = new HashMap<>();
     private final HashMap<String, Long> poSTagPerWordMap = new HashMap<>();

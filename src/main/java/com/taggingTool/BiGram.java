@@ -1,11 +1,12 @@
 package com.taggingTool;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Represents the pair of consecutive tags
  */
-public class BiGram {
+public class BiGram implements Serializable {
 
     private final Tag fstTag;
     private final Tag sndTag;
